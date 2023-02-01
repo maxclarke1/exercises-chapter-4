@@ -79,7 +79,7 @@ class Game:
         pyplot.ion()
         while True:
             self.move(), self.show()
-            pyplot.pause(500)
+            pyplot.pause(0.0000005)
 
     def move(self):
         """
