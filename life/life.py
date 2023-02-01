@@ -2,7 +2,9 @@ import numpy as np
 from matplotlib import pyplot
 from scipy.signal import convolve2d
 
-glider = np.array([[0, 1, 0], [0, 0, 1], [1, 1, 1]])
+glider = np.array([[0, 1, 0],
+                   [0, 0, 1],
+                   [1, 1, 1]])
 
 blinker = np.array([
  [0, 0, 0],
@@ -58,7 +60,7 @@ class Game:
     board: a Size x Size board for the game.
     """
 
-    def __init__(game, Size):
+    def __init__(self, Size):
         """
         Parameters
         ----------
@@ -66,7 +68,7 @@ class Game:
             The dimension of the board in the game of life.
         """
 
-        game.board = np.zeros((Size, Size))
+        self.board = np.zeros((Size, Size))
 
     def play(self):
         """
@@ -77,7 +79,7 @@ class Game:
         pyplot.ion()
         while True:
             self.move(), self.show()
-            pyplot.pause(0.0000005)
+            pyplot.pause(500)
 
     def move(self):
         """
@@ -108,3 +110,35 @@ class Game:
         pyplot.clf()
         pyplot.matshow(self.board, fignum=0, cmap='binary')
         pyplot.show()
+
+    def insert(self, pattern, squareCoord):
+        numOfRows, numOfCols = len(pattern.grid), len(pattern.grid[0])
+        startX = int(squareCoord[0] - np.floor(numOfCols/2))
+        startY = int(squareCoord[1] - np.floor(numOfRows/2))
+        print(startX, startY, numOfRows, numOfCols)
+
+        for i in range(0, numOfCols):
+            for j in range(0, numOfRows):
+                self.board[i+startX][j+startY] = pattern.grid[i][j]
+
+
+class Pattern:
+
+    def __init__(self, pattern):
+        self.grid = pattern
+
+    def flip_vertical(self):
+        return Pattern(np.flipud(self.grid))
+
+    def flip_horizontal(self):
+        return Pattern(np.fliplr(self.grid))
+
+    def flip_diag(self):
+        return Pattern(np.transpose(self.grid))
+
+    def rotate(self, n):
+        B = self.grid
+        for i in range(n):
+            A = np.transpose(B)
+            B = np.flipud(A)
+        return Pattern(B)
